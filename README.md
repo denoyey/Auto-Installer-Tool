@@ -19,12 +19,16 @@ A powerful, automated **CLI tool** built with Python to effortlessly bootstrap y
   - Bypasses interactive prompts for **Next.js**, **Angular**, and **NestJS** (pre-configured with best practices like TypeScript, Tailwind, etc.).
   - Handles common errors (like PHP extension checks) automatically.
 - **💎 Always Updated**: Forces the installation of the **@latest** versions for all frameworks.
+- **✨ React Superpowers**:
+  - **"Clean Slate" Mode**: Option to automatically remove all default boilerplate (assets, minimal App.jsx, empty CSS) for a fresh start.
+  - **Auto-Configured Routing**: One-click installation of `react-router-dom` with a pre-built, best-practice flat folder structure (`src/pages`, `src/components`, `src/routes`).
+  - **Tailwind CSS Ready**: Option to automatically install and configure Tailwind CSS.
 
 ## 🛠 Supported Frameworks
 
 | Framework | Type | Installer / Method |
 | :--- | :--- | :--- |
-| **⚛️ React.js** | Frontend | `Vite` |
+| **⚛️ React.js** | Frontend | `Vite` (Includes optional Cleanup, Router & Tailwind setup) |
 | **🟢 Vue.js** | Frontend | `Vite` |
 | **🔥 Svelte** | Frontend | `Vite` |
 | **▲ Next.js** | Fullstack | `create-next-app` (TypeScript, Tailwind, ESLint auto-configured) |
