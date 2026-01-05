@@ -347,7 +347,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
             Utils.print_colored("[*] Configuring Tailwind CSS with Vite...", "WARNING")
 
-            # 1. Update vite.config.js to use the tailwindcss plugin
             vite_config = """import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -362,7 +361,6 @@ export default defineConfig({
             with open(os.path.join(project_path, "vite.config.js"), "w") as f:
                 f.write(vite_config)
 
-            # 2. Config Tailwind
             tailwind_config = """/** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -381,7 +379,6 @@ export default {
             with open(os.path.join(project_path, "tailwind.config.js"), "w") as f:
                 f.write(tailwind_config)
 
-            # 3. Update index.css
             index_css_path = os.path.join(project_path, "src", "index.css")
 
             css_content = """@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
