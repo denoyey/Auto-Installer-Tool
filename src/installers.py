@@ -67,7 +67,6 @@ class InstallerManager:
                 f"\n[+] React project '{project_name}' created successfully!", "OKGREEN"
             )
 
-            # Ask for cleanup
             clean_choice = (
                 input(
                     "Do you want to clean up the default React boilerplate code? (y/n): "
@@ -79,7 +78,6 @@ class InstallerManager:
                 project_path = os.path.join(target_dir, project_name)
                 self._clean_react_project(project_path)
 
-                # Ask for React Router
                 router_choice = (
                     input(
                         "Do you want to install and setup React Router (react-router-dom)? (y/n): "
@@ -90,7 +88,6 @@ class InstallerManager:
                 if router_choice == "y":
                     self._setup_react_router(project_path)
 
-                # Ask for Tailwind CSS
                 tailwind_choice = (
                     input("Do you want to install and setup Tailwind CSS? (y/n): ")
                     .lower()
@@ -99,12 +96,19 @@ class InstallerManager:
                 if tailwind_choice == "y":
                     self._setup_tailwind(project_path)
 
+                framer_choice = (
+                    input("Do you want to install and setup Framer Motion? (y/n): ")
+                    .lower()
+                    .strip()
+                )
+                if framer_choice == "y":
+                    self._setup_framer_motion(project_path)
+
             self._print_post_install_instructions(
                 "reactjs", project_name, ["npm install", "npm run dev"]
             )
 
     def _clean_react_project(self, project_path):
-        """Cleans up default artifacts from a Vite React project"""
         try:
             Utils.print_colored("\n[*] Cleaning up project files...", "WARNING")
 
@@ -137,8 +141,10 @@ export default App
             index_css_path = os.path.join(project_path, "src", "index.css")
             if os.path.exists(index_css_path):
                 with open(index_css_path, "w") as f:
-                    f.write("")
-                print("Cleared: index.css")
+                    f.write(
+                        "@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');\n\nbody {\n  font-family: 'Poppins', sans-serif;\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n"
+                    )
+                print("Configured: index.css (with Poppins)")
 
             Utils.print_colored("[+] Project cleanup complete!", "OKGREEN")
 
@@ -146,7 +152,6 @@ export default App
             Utils.print_colored(f"[!] Error during cleanup: {e}", "FAIL")
 
     def _setup_react_router(self, project_path):
-        """Sets up React Router with best practices"""
         try:
             Utils.print_colored(
                 "\n[*] Installing react-router-dom (this may take a moment)...",
@@ -171,9 +176,9 @@ export default App
                 f.write(
                     """const Home = () => {
   return (
-    <div style={{ padding: '20px', minHeight: '80vh' }}>
-      <h1>Home Page</h1>
-      <p>Welcome to your new React app with Routing!</p>
+    <div className="p-5 min-h-[80vh]">
+      <h1 className="text-3xl font-bold mb-4">Home Page</h1>
+      <p className="text-gray-600">Welcome to your new React app with Routing!</p>
     </div>
   );
 };
@@ -186,9 +191,9 @@ export default Home;"""
                 f.write(
                     """const About = () => {
   return (
-    <div style={{ padding: '20px', minHeight: '80vh' }}>
-      <h1>About Page</h1>
-      <p>This is the clean About page.</p>
+    <div className="p-5 min-h-[80vh]">
+      <h1 className="text-3xl font-bold mb-4">About Page</h1>
+      <p className="text-gray-600">This is the clean About page.</p>
     </div>
   );
 };
@@ -203,10 +208,10 @@ export default About;"""
 
 const Navbar = () => {
   return (
-    <nav style={{ padding: '15px', borderBottom: '1px solid #eee', display: 'flex', gap: '20px', alignItems: 'center' }}>
-      <h3 style={{ margin: 0 }}>My App</h3>
-      <Link to="/" style={{ textDecoration: 'none', color: '#333' }}>Home</Link>
-      <Link to="/about" style={{ textDecoration: 'none', color: '#333' }}>About</Link>
+    <nav className="flex items-center gap-6 p-4 border-b border-gray-100">
+      <h3 className="text-xl font-bold m-0">My App</h3>
+      <Link to="/" className="text-gray-800 hover:text-blue-500 no-underline transition-colors">Home</Link>
+      <Link to="/about" className="text-gray-800 hover:text-blue-500 no-underline transition-colors">About</Link>
     </nav>
   );
 };
@@ -219,8 +224,8 @@ export default Navbar;"""
                 f.write(
                     """const Footer = () => {
   return (
-    <footer style={{ padding: '20px', borderTop: '1px solid #eee', textAlign: 'center', marginTop: 'auto' }}>
-      <p style={{ margin: 0, color: '#666' }}>&copy; {new Date().getFullYear()} My Application. All rights reserved.</p>
+    <footer className="p-5 border-t border-gray-100 text-center mt-auto">
+      <p className="m-0 text-gray-500">&copy; {new Date().getFullYear()} My Application. All rights reserved.</p>
     </footer>
   );
 };
@@ -235,17 +240,13 @@ export default Footer;"""
 
 const NotFound = () => {
   return (
-    <div style={{ padding: '50px', textAlign: 'center', minHeight: '80vh' }}>
-      <h1 style={{ fontSize: '3rem', margin: '0 0 20px 0', color: '#e74c3c' }}>404</h1>
-      <h2 style={{ margin: '0 0 20px 0' }}>Page Not Found</h2>
-      <p style={{ marginBottom: '30px', color: '#666' }}>The page you are looking for does not exist.</p>
-      <Link to="/" style={{ 
-        padding: '10px 20px', 
-        backgroundColor: '#3498db', 
-        color: 'white', 
-        textDecoration: 'none', 
-        borderRadius: '5px' 
-      }}>Go back to Home</Link>
+    <div className="p-12 text-center min-h-[80vh] flex flex-col items-center justify-center">
+      <h1 className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-orange-500 m-0 mb-4">404</h1>
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Page Not Found</h2>
+      <p className="mb-8 text-gray-500">The page you are looking for does not exist.</p>
+      <Link to="/" className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors no-underline">
+        Go back to Home
+      </Link>
     </div>
   );
 };
@@ -293,9 +294,9 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main style={{ flex: 1 }}>
+      <main className="flex-1">
         <Outlet />
       </main>
       <Footer />
@@ -327,18 +328,28 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             Utils.print_colored(f"[!] Error during router setup: {e}", "FAIL")
 
     def _setup_tailwind(self, project_path):
-        """Installs and configures Tailwind CSS"""
         try:
             Utils.print_colored(
-                "\n[*] Installing Tailwind CSS dependencies...", "WARNING"
+                "\n[*] Installing Tailwind CSS dependencies (PostCSS approach)...",
+                "WARNING",
             )
 
-            cmd = ["npm", "install", "-D", "tailwindcss", "postcss", "autoprefixer"]
+            cmd = [
+                "npm",
+                "install",
+                "-D",
+                "tailwindcss",
+                "@tailwindcss/postcss",
+                "postcss",
+                "autoprefixer",
+            ]
             if not Utils.run_command(cmd, cwd=project_path):
                 Utils.print_colored("[!] Failed to install Tailwind CSS", "FAIL")
                 return
 
-            Utils.print_colored("[*] Configuring Tailwind CSS...", "WARNING")
+            Utils.print_colored(
+                "[*] Configuring Tailwind CSS with PostCSS...", "WARNING"
+            )
 
             tailwind_config = """/** @type {import('tailwindcss').Config} */
 export default {
@@ -347,7 +358,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Poppins', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 }"""
@@ -356,7 +371,7 @@ export default {
 
             postcss_config = """export default {
   plugins: {
-    tailwindcss: {},
+    '@tailwindcss/postcss': {},
     autoprefixer: {},
   },
 }"""
@@ -364,23 +379,79 @@ export default {
                 f.write(postcss_config)
 
             index_css_path = os.path.join(project_path, "src", "index.css")
-            existing_content = ""
-            if os.path.exists(index_css_path):
-                with open(index_css_path, "r") as f:
-                    existing_content = f.read()
 
-            tailwind_directives = """@tailwind base;
+            # Best practice: Import font first, then directives, then base layer assignment
+            css_content = """@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
+  }
+}
 """
             with open(index_css_path, "w") as f:
-                f.write(tailwind_directives + existing_content)
+                f.write(css_content)
 
             Utils.print_colored("[+] Tailwind CSS setup complete!", "OKGREEN")
 
         except Exception as e:
             Utils.print_colored(f"[!] Error during Tailwind setup: {e}", "FAIL")
+
+        except Exception as e:
+            Utils.print_colored(f"[!] Error during Tailwind setup: {e}", "FAIL")
+
+    def _setup_framer_motion(self, project_path):
+        try:
+            Utils.print_colored("\n[*] Installing Framer Motion...", "WARNING")
+
+            if not Utils.run_command(
+                ["npm", "install", "framer-motion"], cwd=project_path
+            ):
+                Utils.print_colored("[!] Failed to install Framer Motion", "FAIL")
+                return
+
+            Utils.print_colored(
+                "[*] Setting up Framer Motion best practices...", "WARNING"
+            )
+
+            os.makedirs(os.path.join(project_path, "src", "components"), exist_ok=True)
+
+            # Create a reusable PageTransition component (Best Practice)
+            transition_component = """import { motion } from 'framer-motion';
+
+const PageTransition = ({ children }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+export default PageTransition;"""
+
+            with open(
+                os.path.join(project_path, "src", "components", "PageTransition.jsx"),
+                "w",
+            ) as f:
+                f.write(transition_component)
+
+            Utils.print_colored(
+                "[+] Framer Motion setup complete! (Added PageTransition.jsx)",
+                "OKGREEN",
+            )
+
+        except Exception as e:
+            Utils.print_colored(f"[!] Error during Framer Motion setup: {e}", "FAIL")
 
     def install_laravel(self):
         Utils.print_colored("\n--- Install Laravel ---", "HEADER")
