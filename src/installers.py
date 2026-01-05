@@ -330,7 +330,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     def _setup_tailwind(self, project_path):
         try:
             Utils.print_colored(
-                "\n[*] Installing Tailwind CSS dependencies (PostCSS approach)...",
+                "\n[*] Installing Tailwind CSS dependencies (Vite approach)...",
                 "WARNING",
             )
 
@@ -339,18 +339,30 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 "install",
                 "-D",
                 "tailwindcss",
-                "@tailwindcss/postcss",
-                "postcss",
-                "autoprefixer",
+                "@tailwindcss/vite",
             ]
             if not Utils.run_command(cmd, cwd=project_path):
                 Utils.print_colored("[!] Failed to install Tailwind CSS", "FAIL")
                 return
 
-            Utils.print_colored(
-                "[*] Configuring Tailwind CSS with PostCSS...", "WARNING"
-            )
+            Utils.print_colored("[*] Configuring Tailwind CSS with Vite...", "WARNING")
 
+            # 1. Update vite.config.js to use the tailwindcss plugin
+            vite_config = """import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss(),
+  ],
+})"""
+            with open(os.path.join(project_path, "vite.config.js"), "w") as f:
+                f.write(vite_config)
+
+            # 2. Config Tailwind
             tailwind_config = """/** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -369,23 +381,11 @@ export default {
             with open(os.path.join(project_path, "tailwind.config.js"), "w") as f:
                 f.write(tailwind_config)
 
-            postcss_config = """export default {
-  plugins: {
-    '@tailwindcss/postcss': {},
-    autoprefixer: {},
-  },
-}"""
-            with open(os.path.join(project_path, "postcss.config.js"), "w") as f:
-                f.write(postcss_config)
-
+            # 3. Update index.css
             index_css_path = os.path.join(project_path, "src", "index.css")
 
-            # Best practice: Import font first, then directives, then base layer assignment
             css_content = """@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   html {
@@ -397,10 +397,7 @@ export default {
             with open(index_css_path, "w") as f:
                 f.write(css_content)
 
-            Utils.print_colored("[+] Tailwind CSS setup complete!", "OKGREEN")
-
-        except Exception as e:
-            Utils.print_colored(f"[!] Error during Tailwind setup: {e}", "FAIL")
+            Utils.print_colored("[+] Tailwind CSS setup complete (Vite)!", "OKGREEN")
 
         except Exception as e:
             Utils.print_colored(f"[!] Error during Tailwind setup: {e}", "FAIL")
@@ -421,7 +418,6 @@ export default {
 
             os.makedirs(os.path.join(project_path, "src", "components"), exist_ok=True)
 
-            # Create a reusable PageTransition component (Best Practice)
             transition_component = """import { motion } from 'framer-motion';
 
 const PageTransition = ({ children }) => {
