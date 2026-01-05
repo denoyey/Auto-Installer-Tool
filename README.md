@@ -22,7 +22,11 @@ A powerful, automated **CLI tool** built with Python to effortlessly bootstrap y
 - **✨ React Superpowers**:
   - **"Clean Slate" Mode**: Option to automatically remove all default boilerplate (assets, minimal App.jsx, empty CSS) for a fresh start.
   - **Auto-Configured Routing**: One-click installation of `react-router-dom` with a pre-built, best-practice flat folder structure (`src/pages`, `src/components`, `src/routes`).
-  - **Tailwind CSS Ready**: Option to automatically install and configure Tailwind CSS.
+  - **Tailwind CSS Ready (Fixed & Optimized)**:
+    - Automatically installs **Tailwind CSS v4-ready** configuration using `@tailwindcss/postcss` to prevent Vite plugin errors.
+    - Sets **Poppins** as the default font family (via Google Fonts) automatically.
+    - Generates all starter components (`Navbar`, `Footer`, `Home`, `NotFound`) using **Utility Classes** instead of inline styles.
+  - **Animation Ready**: Option to install **Framer Motion** and automatically creates a reusable `PageTransition` component for smooth page transitions.
 
 ## 🛠 Supported Frameworks
 
