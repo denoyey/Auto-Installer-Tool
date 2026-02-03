@@ -477,9 +477,151 @@ export default PageTransition;"""
                 f"\n[+] Laravel project '{project_name}' created successfully!",
                 "OKGREEN",
             )
-            self._print_post_install_instructions(
-                "laravel", project_name, ["php artisan serve"]
+
+            project_path = os.path.join(target_dir, project_name)
+
+            tailwind_choice = (
+                input("\nDo you want to install Tailwind CSS (via Vite)? (y/n): ")
+                .lower()
+                .strip()
             )
+            if tailwind_choice == "y":
+                self._setup_laravel_tailwind(project_path)
+
+            filament_choice = (
+                input(
+                    "\nDo you want to install Filament Admin Panel (latest version)? (y/n): "
+                )
+                .lower()
+                .strip()
+            )
+            if filament_choice == "y":
+                self._setup_filament(project_path, composer_cmd)
+
+            post_commands = ["php artisan serve"]
+            if filament_choice == "y":
+                post_commands = [
+                    "php artisan migrate",
+                    "php artisan make:filament-user",
+                    "php artisan serve",
+                ]
+
+            self._print_post_install_instructions(
+                "laravel", project_name, post_commands
+            )
+
+    def _setup_laravel_tailwind(self, project_path):
+        """
+        Setup Tailwind CSS via Vite for Laravel project.
+        Follows official Tailwind CSS documentation: https://tailwindcss.com/docs/installation/using-vite
+
+        Args:
+            project_path: Path to the Laravel project
+        """
+        try:
+            Utils.print_colored("\n[*] Installing Tailwind CSS via Vite...", "WARNING")
+
+            if not Utils.check_dependency("npm", "Node.js/npm"):
+                Utils.print_colored(
+                    "[!] npm is required to install Tailwind CSS", "FAIL"
+                )
+                return
+
+            Utils.print_colored("[*] Installing npm dependencies...", "WARNING")
+            if not Utils.run_command(["npm", "install"], cwd=project_path):
+                Utils.print_colored("[!] Failed to run npm install", "FAIL")
+                return
+
+            install_cmd = ["npm", "install", "tailwindcss", "@tailwindcss/vite"]
+            if not Utils.run_command(install_cmd, cwd=project_path):
+                Utils.print_colored(
+                    "[!] Failed to install Tailwind CSS packages", "FAIL"
+                )
+                return
+
+            Utils.print_colored("[*] Configuring Vite plugin...", "WARNING")
+
+            vite_config_path = os.path.join(project_path, "vite.config.js")
+            vite_config = """import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/js/app.js'],
+            refresh: true,
+        }),
+        tailwindcss(),
+    ],
+});
+"""
+            with open(vite_config_path, "w") as f:
+                f.write(vite_config)
+
+            Utils.print_colored("[*] Configuring Tailwind CSS import...", "WARNING")
+
+            app_css_path = os.path.join(project_path, "resources", "css", "app.css")
+            tailwind_import = '@import "tailwindcss";\n'
+            with open(app_css_path, "w") as f:
+                f.write(tailwind_import)
+
+            Utils.print_colored(
+                "[+] Tailwind CSS (via Vite) installed successfully!", "OKGREEN"
+            )
+
+            Utils.print_colored("\n📋 Tailwind CSS Setup Info:", "BOLD")
+            print("  • Run: npm run dev (development)")
+            print("  • Run: npm run build (production)")
+            print("  • Documentation: https://tailwindcss.com/docs")
+            print()
+
+        except Exception as e:
+            Utils.print_colored(f"[!] Error during Tailwind CSS setup: {e}", "FAIL")
+
+    def _setup_filament(self, project_path, composer_cmd):
+        """
+        Setup Filament Admin Panel for Laravel project.
+        Uses the latest version of Filament (v3.x).
+
+        Args:
+            project_path: Path to the Laravel project
+            composer_cmd: Composer command to use (list format)
+        """
+        try:
+            Utils.print_colored(
+                "\n[*] Installing Filament Admin Panel (this may take a moment)...",
+                "WARNING",
+            )
+
+            install_cmd = composer_cmd + [
+                "require",
+                "filament/filament",
+                "--ignore-platform-req=ext-fileinfo",
+            ]
+            if not Utils.run_command(install_cmd, cwd=project_path):
+                Utils.print_colored("[!] Failed to install Filament package", "FAIL")
+                return
+
+            Utils.print_colored("[*] Installing Filament panels...", "WARNING")
+
+            panel_cmd = ["php", "artisan", "filament:install", "--panels"]
+            if not Utils.run_command(panel_cmd, cwd=project_path):
+                Utils.print_colored("[!] Failed to install Filament panels", "FAIL")
+                return
+
+            Utils.print_colored(
+                "[+] Filament Admin Panel installed successfully!", "OKGREEN"
+            )
+
+            Utils.print_colored("\n📋 Filament Setup Info:", "BOLD")
+            print("  • Admin Panel URL: http://localhost:8000/admin")
+            print("  • Create admin user: php artisan make:filament-user")
+            print("  • Documentation: https://filamentphp.com/docs")
+            print()
+
+        except Exception as e:
+            Utils.print_colored(f"[!] Error during Filament setup: {e}", "FAIL")
 
     def install_nextjs(self):
         Utils.print_colored("\n--- Install Next.js ---", "HEADER")
