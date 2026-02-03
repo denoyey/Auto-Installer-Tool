@@ -90,13 +90,15 @@ Build stunning admin dashboards in minutes with **Filament v3**!
 ┌─────────────────────────────────────────────────────────┐
 │  1. Create Laravel Project (via Composer)               │
 ├─────────────────────────────────────────────────────────┤
-│  2. 🎨 "Install Tailwind CSS (via Vite)?" [y/n]         │
-│     └─ If yes: npm install + configure vite + app.css   │
+│  2. ⚡ AUTO: npm install (frontend dependencies)        │
 ├─────────────────────────────────────────────────────────┤
-│  3. 🛡️ "Install Filament Admin Panel?" [y/n]            │
+│  3. 🎨 "Install Tailwind CSS (via Vite)?" [y/n]         │
+│     └─ If yes: install packages + configure vite        │
+├─────────────────────────────────────────────────────────┤
+│  4. 🛡️ "Install Filament Admin Panel?" [y/n]            │
 │     └─ If yes: composer require + artisan install       │
 ├─────────────────────────────────────────────────────────┤
-│  4. ✅ Done! Post-install commands displayed            │
+│  5. ✅ Done! Post-install commands displayed            │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -189,9 +191,11 @@ The tool keeps your workspace clean:
 Enter project name: my-admin-app
 [+] Laravel project 'my-admin-app' created successfully!
 
+[*] Running npm install (Laravel frontend dependencies)...
+added 1 package, and audited 2 packages in 3s
+
 Do you want to install Tailwind CSS (via Vite)? (y/n): y
 [*] Installing Tailwind CSS via Vite...
-[*] Installing npm dependencies...
 [+] Tailwind CSS (via Vite) installed successfully!
 
 📋 Tailwind CSS Setup Info:

@@ -480,6 +480,13 @@ export default PageTransition;"""
 
             project_path = os.path.join(target_dir, project_name)
 
+            if Utils.check_dependency("npm", "Node.js/npm"):
+                Utils.print_colored(
+                    "\n[*] Running npm install (Laravel frontend dependencies)...",
+                    "WARNING",
+                )
+                Utils.run_command(["npm", "install"], cwd=project_path)
+
             tailwind_choice = (
                 input("\nDo you want to install Tailwind CSS (via Vite)? (y/n): ")
                 .lower()
@@ -520,17 +527,6 @@ export default PageTransition;"""
         """
         try:
             Utils.print_colored("\n[*] Installing Tailwind CSS via Vite...", "WARNING")
-
-            if not Utils.check_dependency("npm", "Node.js/npm"):
-                Utils.print_colored(
-                    "[!] npm is required to install Tailwind CSS", "FAIL"
-                )
-                return
-
-            Utils.print_colored("[*] Installing npm dependencies...", "WARNING")
-            if not Utils.run_command(["npm", "install"], cwd=project_path):
-                Utils.print_colored("[!] Failed to run npm install", "FAIL")
-                return
 
             install_cmd = ["npm", "install", "tailwindcss", "@tailwindcss/vite"]
             if not Utils.run_command(install_cmd, cwd=project_path):
