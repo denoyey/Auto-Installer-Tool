@@ -592,8 +592,9 @@ export default defineConfig({
 
             install_cmd = composer_cmd + [
                 "require",
-                "filament/filament",
+                "filament/filament:^4.0",
                 "--ignore-platform-req=ext-fileinfo",
+                "--ignore-platform-req=ext-intl",
             ]
             if not Utils.run_command(install_cmd, cwd=project_path):
                 Utils.print_colored("[!] Failed to install Filament package", "FAIL")
