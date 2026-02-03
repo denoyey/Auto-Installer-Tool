@@ -578,7 +578,7 @@ export default defineConfig({
     def _setup_filament(self, project_path, composer_cmd):
         """
         Setup Filament Admin Panel for Laravel project.
-        Uses the latest version of Filament (v3.x).
+        Uses the latest version of Filament (v4.x).
 
         Args:
             project_path: Path to the Laravel project

@@ -70,11 +70,11 @@ export default defineConfig({
 
 ### 🛡️ Filament Admin Panel
 
-Build stunning admin dashboards in minutes with **Filament v3**!
+Build stunning admin dashboards in minutes with **Filament v4**!
 
 | Feature | Description |
 |---------|-------------|
-| **Latest Version** | Automatically installs Filament v3.x |
+| **Latest Version** | Automatically installs Filament v4.x |
 | **Admin Panel Ready** | Pre-configured panel at `/admin` |
 | **User Management** | Create admin users with one command |
 | **Full Documentation** | Links provided after installation |
