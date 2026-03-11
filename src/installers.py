@@ -104,6 +104,22 @@ class InstallerManager:
                 if framer_choice == "y":
                     self._setup_framer_motion(project_path)
 
+                lenis_choice = (
+                    input("Do you want to install and setup Lenis (Smooth Scroll)? (y/n): ")
+                    .lower()
+                    .strip()
+                )
+                if lenis_choice == "y":
+                    self._setup_lenis(project_path)
+
+                gsap_choice = (
+                    input("Do you want to install and setup GSAP (@gsap/react)? (y/n): ")
+                    .lower()
+                    .strip()
+                )
+                if gsap_choice == "y":
+                    self._setup_gsap(project_path)
+
             self._print_post_install_instructions(
                 "reactjs", project_name, ["npm install", "npm run dev"]
             )
@@ -445,6 +461,125 @@ export default PageTransition;"""
 
         except Exception as e:
             Utils.print_colored(f"[!] Error during Framer Motion setup: {e}", "FAIL")
+    
+    def _setup_lenis(self, project_path):
+        try:
+            Utils.print_colored("\n[*] Installing Lenis...", "WARNING")
+
+            if not Utils.run_command(["npm", "install", "lenis"], cwd=project_path):
+                Utils.print_colored("[!] Failed to install Lenis", "FAIL")
+                return
+
+            Utils.print_colored("[*] Setting up and applying Lenis SmoothScroll...", "WARNING")
+
+            os.makedirs(os.path.join(project_path, "src", "components"), exist_ok=True)
+
+            smooth_scroll_component = """import { useEffect } from 'react';
+import Lenis from 'lenis';
+
+const SmoothScroll = ({ children }) => {
+  useEffect(() => {
+    const lenis = new Lenis({
+      autoRaf: true,
+      smoothWheel: true,
+    });
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
+  return <>{children}</>;
+};
+
+export default SmoothScroll;"""
+
+            with open(
+                os.path.join(project_path, "src", "components", "SmoothScroll.jsx"), "w"
+            ) as f:
+                f.write(smooth_scroll_component)
+
+            # Auto-inject into main.jsx
+            main_jsx_path = os.path.join(project_path, "src", "main.jsx")
+            if os.path.exists(main_jsx_path):
+                with open(main_jsx_path, "r") as f:
+                    content = f.read()
+
+                if "SmoothScroll" not in content:
+                    content = "import SmoothScroll from './components/SmoothScroll'\n" + content
+                    
+                    # Wrap the application with SmoothScroll
+                    if "<RouterProvider router={router} />" in content:
+                        content = content.replace(
+                            "<RouterProvider router={router} />",
+                            "<SmoothScroll>\n      <RouterProvider router={router} />\n    </SmoothScroll>"
+                        )
+                    elif "<App />" in content:
+                        content = content.replace(
+                            "<App />",
+                            "<SmoothScroll>\n      <App />\n    </SmoothScroll>"
+                        )
+                    
+                    with open(main_jsx_path, "w") as f:
+                        f.write(content)
+
+            Utils.print_colored(
+                "[+] Lenis setup complete! (Automatically wrapped app in main.jsx)",
+                "OKGREEN",
+            )
+
+        except Exception as e:
+            Utils.print_colored(f"[!] Error during Lenis setup: {e}", "FAIL")
+
+    def _setup_gsap(self, project_path):
+        try:
+            Utils.print_colored("\n[*] Installing GSAP and @gsap/react...", "WARNING")
+
+            if not Utils.run_command(
+                ["npm", "install", "gsap", "@gsap/react"], cwd=project_path
+            ):
+                Utils.print_colored("[!] Failed to install GSAP", "FAIL")
+                return
+
+            Utils.print_colored("[*] Setting up GSAP utility and auto-initializing...", "WARNING")
+
+            os.makedirs(os.path.join(project_path, "src", "utils"), exist_ok=True)
+
+            gsap_util_code = """import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Daftarkan plugin secara global di sini agar tidak perlu diulang di setiap komponen
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+// Export kembali semuanya agar komponen lain cukup import dari file ini
+export { gsap, useGSAP, ScrollTrigger };
+"""
+
+            with open(
+                os.path.join(project_path, "src", "utils", "gsap.js"), "w"
+            ) as f:
+                f.write(gsap_util_code)
+
+            # Auto-initialize GSAP in main.jsx by importing the util file
+            main_jsx_path = os.path.join(project_path, "src", "main.jsx")
+            if os.path.exists(main_jsx_path):
+                with open(main_jsx_path, "r") as f:
+                    content = f.read()
+                
+                if "import './utils/gsap'" not in content:
+                    # Inject at the top
+                    content = "import './utils/gsap'\n" + content
+                    with open(main_jsx_path, "w") as f:
+                        f.write(content)
+
+            Utils.print_colored(
+                "[+] GSAP setup complete! (Configured in src/utils/gsap.js and auto-initialized in main.jsx)",
+                "OKGREEN",
+            )
+
+        except Exception as e:
+            Utils.print_colored(f"[!] Error during GSAP setup: {e}", "FAIL")
 
     def install_laravel(self):
         Utils.print_colored("\n--- Install Laravel ---", "HEADER")
