@@ -108,7 +108,7 @@ Build stunning admin dashboards in minutes with **Filament v4**!
 
 | Framework | Type | Installer / Method | Optional Add-ons |
 | :--- | :--- | :--- | :--- |
-| **⚛️ React.js** | Frontend | `Vite` | Cleanup, Router, Tailwind, Framer Motion |
+| **⚛️ React.js** | Frontend | `Vite` | Cleanup, Router, Tailwind, Framer Motion, Lenis, GSAP |
 | **🟢 Vue.js** | Frontend | `Vite` | - |
 | **🔥 Svelte** | Frontend | `Vite` | - |
 | **▲ Next.js** | Fullstack | `create-next-app` | TypeScript, Tailwind, ESLint (auto) |
@@ -224,7 +224,11 @@ To get started, run:
 
 ## 📦 What's New
 
-### v1.1.0 (Latest)
+### v1.2.0 (Latest)
+- ✨ React Lenis & GSAP Integration - Install and auto-configure smooth scrolling and advanced animations.
+- 🤖 Smart Auto-Injection - Automatically reads your main.jsx to wrap your React app with SmoothScroll and initialize GSAP globally.
+
+### v1.1.0
 - ✨ **Laravel Tailwind CSS Integration** - Install Tailwind CSS via Vite with one prompt
 - ✨ **Laravel Filament Admin Panel** - Build admin dashboards instantly
 - 🔧 Improved post-install instructions based on selected add-ons
