@@ -356,6 +356,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 "-D",
                 "tailwindcss",
                 "@tailwindcss/vite",
+                "--legacy-peer-deps",
             ]
             if not Utils.run_command(cmd, cwd=project_path):
                 Utils.print_colored("[!] Failed to install Tailwind CSS", "FAIL")
@@ -727,7 +728,7 @@ export default defineConfig({
 
             install_cmd = composer_cmd + [
                 "require",
-                'filament/filament:"^4.5"',
+                "filament/filament",
                 "--ignore-platform-req=ext-fileinfo",
                 "--ignore-platform-req=ext-intl",
                 "--no-audit",
