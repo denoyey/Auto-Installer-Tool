@@ -120,6 +120,14 @@ class InstallerManager:
                 if gsap_choice == "y":
                     self._setup_gsap(project_path)
 
+                vercel_choice = (
+                    input("Do you want to create a vercel.json file for deployment? (y/n): ")
+                    .lower()
+                    .strip()
+                )
+                if vercel_choice == "y":
+                    self._setup_vercel(project_path)
+
             self._print_post_install_instructions(
                 "reactjs", project_name, ["npm install", "npm run dev"]
             )
@@ -581,6 +589,31 @@ export { gsap, useGSAP, ScrollTrigger };
 
         except Exception as e:
             Utils.print_colored(f"[!] Error during GSAP setup: {e}", "FAIL")
+
+    def _setup_vercel(self, project_path):
+        try:
+            Utils.print_colored("\n[*] Creating vercel.json...", "WARNING")
+
+            vercel_content = """{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}"""
+            vercel_path = os.path.join(project_path, "vercel.json")
+            
+            with open(vercel_path, "w") as f:
+                f.write(vercel_content)
+
+            Utils.print_colored(
+                "[+] vercel.json created successfully!",
+                "OKGREEN",
+            )
+
+        except Exception as e:
+            Utils.print_colored(f"[!] Error creating vercel.json: {e}", "FAIL")
 
     def install_laravel(self):
         Utils.print_colored("\n--- Install Laravel ---", "HEADER")
