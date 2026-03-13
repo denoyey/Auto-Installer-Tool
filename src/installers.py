@@ -421,7 +421,7 @@ export default {
             Utils.print_colored("\n[*] Installing Framer Motion...", "WARNING")
 
             if not Utils.run_command(
-                ["npm", "install", "framer-motion"], cwd=project_path
+                ["npm", "install", "framer-motion", "--legacy-peer-deps"], cwd=project_path
             ):
                 Utils.print_colored("[!] Failed to install Framer Motion", "FAIL")
                 return
@@ -467,7 +467,7 @@ export default PageTransition;"""
         try:
             Utils.print_colored("\n[*] Installing Lenis...", "WARNING")
 
-            if not Utils.run_command(["npm", "install", "lenis"], cwd=project_path):
+            if not Utils.run_command(["npm", "install", "lenis", "--legacy-peer-deps"], cwd=project_path):
                 Utils.print_colored("[!] Failed to install Lenis", "FAIL")
                 return
 
@@ -537,7 +537,7 @@ export default SmoothScroll;"""
             Utils.print_colored("\n[*] Installing GSAP and @gsap/react...", "WARNING")
 
             if not Utils.run_command(
-                ["npm", "install", "gsap", "@gsap/react"], cwd=project_path
+                ["npm", "install", "gsap", "@gsap/react", "--legacy-peer-deps"], cwd=project_path
             ):
                 Utils.print_colored("[!] Failed to install GSAP", "FAIL")
                 return
